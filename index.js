@@ -7,13 +7,21 @@ import { fileURLToPath } from "url";
 import { error } from "console";
 
 import pg from "pg";
-const db = new pg.Client({
-  user: "postgres",
-  host: "localhost",
-  database: "Yapsy",
-  password: "Harsh@05",
-  port: 5432
-});
+const db = process.env.DATABASE_URL
+  ? new pg.Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },  // required for Railway
+    })
+  : new pg.Client({
+      user: "postgres",
+      host: "localhost",
+      database: "yapsy",
+      password: "yourpassword",
+      port: 5432,
+    });
+
+db.connect();
+
 db.connect();
 import bcrypt from 'bcrypt';
 
