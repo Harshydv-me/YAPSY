@@ -7,22 +7,26 @@ import { fileURLToPath } from "url";
 import { error } from "console";
 
 import pg from "pg";
+const { Pool } = pg;
+
 const db = process.env.DATABASE_URL
-  ? new pg.Client({
+  ? new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },  // required for Railway
+      ssl: { rejectUnauthorized: false },   // Railway requires SSL
     })
-  : new pg.Client({
+  : new Pool({
       user: "postgres",
       host: "localhost",
-      database: "yapsy",
-      password: "yourpassword",
+      database: "Yapsy",
+      password: "Harsh@05",
       port: 5432,
     });
 
-db.connect();
+export default db;            // <‑ optional, but clean
+//  NO db.connect();  Pool handles that internally
 
-db.connect();
+
+
 import bcrypt from 'bcrypt';
 
 const app = express();
