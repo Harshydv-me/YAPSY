@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile - Yapsy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Source+Serif+Pro&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Source Serif Pro', serif;
+      background-color: #D1E8E2;
+      margin: 0;
+      padding: 40px;
+    }
+
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInLeft {
+      0% { opacity: 0; transform: translateX(-40px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+
+    .back-button {
+      font-size: 1.5rem;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: #116466;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: bold;
+      text-decoration: none;
+      transition: transform 0.2s ease, background-color 0.3s;
+      animation: slideInLeft 0.6s ease-out both;
+    }
+
+    .back-button:hover {
+      transform: scale(1.05);
+      background-color: #bddbd5;
+    }
+
+    /* ─── Profile Content ─── */
+    .profile-container {
+      margin-top: 40px;
+      animation: fadeInUp 0.8s ease-out both;
+    }
+
+    .profile-header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #2C3531;
+      margin-bottom: 10px;
+    }
+
+    .edit-btn {
+      background-color: #ffffff;
+      color: #2C3531;
+      padding: 15px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: bold;
+      border: none;
+      transition: transform 0.2s ease, background-color 0.3s;
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+
+    .edit-btn:hover {
+      background-color: #c1c1c1;
+      transform: scale(1.05);
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-button" href="/chat">←</a>
+
+  <div class="profile-container">
+    <div class="profile-header">
+      <h1>My Profile</h1>
+      <a class="edit-btn" href="/profile/edit">Edit Profile</a>
+    </div>
+    <p><strong>Full Name:</strong> <%= user.fullname %></p>
+    <p><strong>Email:</strong> <%= user.email %></p>
+    <p><strong>Phone:</strong> <%= user.phone %></p>
+  </div>
+
+</body>
+</html>
+

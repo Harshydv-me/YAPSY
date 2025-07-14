@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Yapsy</title>
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Source Serif Pro', serif;
+      background-color: #D1E8E2;
+    }
+
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      10%, 90% { transform: translateX(-1px); }
+      20%, 80% { transform: translateX(2px); }
+      30%, 50%, 70% { transform: translateX(-4px); }
+      40%, 60% { transform: translateX(4px); }
+    }
+
+    .fade-in-up { animation: fadeInUp 1s ease-out both; }
+    .error-shake { animation: shake 0.4s; }
+
+    input:focus {
+      border-color: #2C3531;
+      box-shadow: 0 0 6px rgba(44, 53, 49, 0.4);
+      transition: 0.25s;
+      outline: none;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s ease;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    .login-field {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s forwards;
+    }
+
+    .login-field:nth-child(1) { animation-delay: 0.2s; }
+    .login-field:nth-child(2) { animation-delay: 0.35s; }
+
+    .login-btn {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s forwards 0.5s;
+    }
+  </style>
+</head>
+<body>
+  <div style="display: flex; flex-direction: column; align-items: center; min-height: 95vh;">
+
+
+    <img src="/images/yapsyy.png" alt="Yapsy Logo"
+         style="width: 200px; transform: translateY(-20px);" />
+
+
+    <div class="fade-in-up <%= error ? 'error-shake' : '' %>"
+         style="background-color: #ffffff; padding: 40px 30px; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); text-align: center;">
+
+      <h2 style="margin-bottom: 15px; font-weight: 700; color: #116466; font-family: 'Montserrat', sans-serif;">Log in</h2>
+
+      <% if (error) { %>
+        <p style="color: red;"> <%= error %> </p>
+      <% } %>
+
+      <% if (success) { %>
+        <p style="color: green;"> <%= success %> </p>
+      <% } %>
+
+      <form action="/login" method="post" style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+        <input type="text" name="email" placeholder="Email or phone number" required
+               class="login-field"
+               style="width: 100%; padding: 14px; font-size: 16px; border: 1px solid #116466; border-radius: 12px; background-color: #ffffff; font-family: 'Source Serif Pro', serif;" />
+
+        <input type="password" name="password" placeholder="Password" required
+               class="login-field"
+               style="width: 100%; padding: 14px; font-size: 16px; border: 1px solid #116466; border-radius: 12px; background-color: #ffffff; font-family: 'Source Serif Pro', serif;" />
+
+        <button type="submit"
+                class="login-btn"
+                style="width: 100%; background-color: #116466; color: #ffffff; font-size: 16px; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-family: 'Montserrat', sans-serif;">
+          Log In
+        </button>
+      </form>
+
+      <div style="margin-top: 16px;">
+        <a href="/forgot-password" style="color: #116466; font-size: 14px; text-decoration: none; font-family: 'Source Serif Pro', serif;">Forgot password?</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yapsy</title>
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400&display=swap');
+
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #D1E8E2;
+    color: #2C3531;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #116466;
+  }
+
+  .logo img {
+    height: 100px;
+    margin-left: 0px;
+    /* No animation here */
+  }
+
+  .main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 20px;
+    flex-wrap: wrap;
+  }
+
+  .left-graphic {
+    flex: 1;
+    text-align: center;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .left-graphic img {
+    width: 500px;
+    max-width: 100%;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .right-buttons {
+    flex: 1;
+    max-width: 400px;
+    text-align: center;
+    padding-right: 250px;
+  }
+
+  .right-buttons h1 {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2C3531;
+    font-family: 'Montserrat', sans-serif;
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+  }
+
+  .right-buttons p {
+    font-size: 16px;
+    margin-bottom: 30px;
+    color: #116466;
+    font-family: 'Source Serif Pro', serif;
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    margin: 10px auto;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  .btn-started {
+    background-color: #116466;
+    color: white;
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: 0.7s;
+  }
+
+  .btn-login {
+    background-color: white;
+    color: #116466;
+    border: 2px solid #116466;
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: 0.9s;
+  }
+
+  .btn-started:hover {
+    background-color: #2C3531;
+  }
+
+  .btn-login:hover {
+    background-color: #e0e0e0;
+  }
+
+  .btn:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+
+  @media (max-width: 768px) {
+    .main-content {
+      flex-direction: column;
+      padding: 40px 20px;
+    }
+
+    .right-buttons {
+      margin-top: 30px;
+      padding-right: 0;
+    }
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(15px);
+    }
+  }
+</style>
+
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <img src="/images/yapsylogoo.png" alt="Yapsy Logo" />
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="left-graphic">
+      <img src="/images/yapsyy.png" alt="Mascot" />
+    </div>
+
+    <div class="right-buttons">
+      <h1>A sleek, modern messaging platform designed for seamless, real-time communication.</h1>
+      <p>Start your journey with Yapsy</p>
+      <button class="btn btn-started" onclick="location.href='/signup'">GET STARTED</button>
+      <button class="btn btn-login" onclick="location.href='/login'">I ALREADY HAVE AN ACCOUNT</button>
+    </div>
+  </div>
+
+</body>
+</html>

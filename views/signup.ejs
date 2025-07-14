@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up - Yapsy</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Source Serif Pro', serif;
+      background-color: #D1E8E2;
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      10%, 90% { transform: translateX(-1px); }
+      20%, 80% { transform: translateX(2px); }
+      30%, 50%, 70% { transform: translateX(-4px); }
+      40%, 60% { transform: translateX(4px); }
+    }
+
+    .fade-in-up { animation: fadeInUp 1s ease-out both; }
+    .shake { animation: shake 0.4s; }
+
+    .input-field {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s forwards;
+    }
+
+    .input-field:nth-child(1) { animation-delay: 0.2s; }
+    .input-field:nth-child(2) { animation-delay: 0.35s; }
+    .input-field:nth-child(3) { animation-delay: 0.5s; }
+    .input-field:nth-child(4) { animation-delay: 0.65s; }
+    .input-field:nth-child(5) { animation-delay: 0.8s; }
+
+    button {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s forwards 1s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s ease;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    input:focus {
+      border-color: #2C3531;
+      box-shadow: 0 0 6px rgba(44, 53, 49, 0.3);
+      transition: 0.2s;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div style="display: flex; flex-direction: column; align-items: center; min-height: 95vh;">
+
+
+    <img src="/images/yapsyy.png" alt="Yapsy Logo" style="width: 200px; transform: translateY(-20px);" />
+
+    <!-- Signup Box -->
+    <div class="fade-in-up <%= error ? 'shake' : '' %>" style="background-color: #ffffff; padding: 40px 30px; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); text-align: center;">
+
+      <h2 style="margin-bottom: 15px; font-weight: 700; color: #116466; font-family: 'Montserrat', sans-serif;">Create your profile</h2>
+
+      <% if (error) { %>
+        <p style="color: red;"> <%= error %> </p>
+      <% } %>
+
+      <% if (success) { %>
+        <p style="color: green;"> <%= success %> </p>
+      <% } %>
+
+      <form action="/signup" method="post" style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+        
+        <input type="text" name="fullname" placeholder="Full Name" required class="input-field"
+               style="width: 100%; padding: 14px; font-size: 16px; font-family: 'Source Serif Pro', serif; border: 1px solid #116466; border-radius: 12px; background-color: #ffffff;" />
+
+        <input type="email" name="email" placeholder="Email address" required class="input-field"
+               style="width: 100%; padding: 14px; font-size: 16px; font-family: 'Source Serif Pro', serif; border: 1px solid #116466; border-radius: 12px; background-color: #ffffff;" />
+
+        <input type="text" name="phone" placeholder="Phone number (optional)" class="input-field"
+               style="width: 100%; padding: 14px; font-size: 16px; font-family: 'Source Serif Pro', serif; border: 1px solid #116466; border-radius: 12px; background-color: #ffffff;" />
+
+        <input type="password" name="password" placeholder="Create password" required class="input-field"
+               style="width: 100%; padding: 14px; font-size: 16px; font-family: 'Source Serif Pro', serif; border: 1px solid #116466; border-radius: 12px; background-color: #ffffff;" />
+
+        <input type="password" name="confirm_password" placeholder="Confirm password" required class="input-field"
+               style="width: 100%; padding: 14px; font-size: 16px; font-family: 'Source Serif Pro', serif; border: 1px solid #116466; border-radius: 12px; background-color: #ffffff;" />
+
+        <button type="submit"
+                style="width: 100%; background-color: #116466; color: #ffffff; font-size: 16px; font-family: 'Montserrat', sans-serif; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">
+          Sign Up
+        </button>
+      </form>
+
+      <div style="margin-top: 20px;">
+        <span style="font-size: 14px; color: #2C3531; font-family: 'Source Serif Pro', serif;">Already have an account?</span>
+        <a href="/login" style="font-size: 14px; color: #116466; text-decoration: none; font-weight: bold; font-family: 'Source Serif Pro', serif;">Log In</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yapsy</title>
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles/userstyle.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body style="font-family: 'Source Serif Pro', serif;">
+  <div class="container">
+    <!-- Left Panel -->
+    <div class="left-panel">
+      <div class="left-header">
+        <h2 style="font-family: 'Montserrat', sans-serif;">Chats</h2>
+        <img src="/images/setting.png" alt="Settings" class="settings-icon" onclick="toggleSettingsDropdown()">
+        <div class="settings-dropdown" id="settingsDropdown">
+          <a href="/profile">My Profile</a>
+          <a href="/logout">Logout</a>
+          
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" placeholder="Search users..." id="searchInput" onkeyup="filterUsers()" style="font-family: 'Source Serif Pro', serif;">
+      </div>
+
+      <div class="chat-users" id="chatUsersContainer">
+        <!-- User search results will be populated here via AJAX -->
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <!-- Default view when no user is selected -->
+      <div class="default-view" id="defaultView">
+        <img src="/images/yapsylogoo.png" style="width: 200px; height: 200px; margin-bottom: 0px; opacity: 70%;">
+      </div>
+
+      <!-- Chat area -->
+      <div class="chat-area" id="chatArea" style="display: none;">
+        <div class="chat-header" id="chatHeader">
+          <h3 id="chatUserName" style="cursor:pointer; font-family:'Montserrat',sans-serif;"onclick="viewUserProfile()">User Name</h3>
+          <div style="position: relative;">
+            <button class="options-btn" onclick="toggleOptionsMenu()" style="font-family: 'Source Serif Pro', serif;">⋮</button>
+            <div id="optionsMenu" style="display:none; position: absolute; right: 0; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); border-radius: 6px;">
+              <a id="deleteChatBtn" class="menu-item" href="#" style="display:block; padding:15px 20px; text-decoration:none; color:black; white-space:nowrap;">Delete chat</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages" style="font-family: 'Source Serif Pro', serif;">
+          <!-- Real-time messages will go here -->
+        </div>
+
+        <div class="message-input">
+          <input type="text" id="messageInput" placeholder="Type a message..." style="font-family: 'Source Serif Pro', serif;">
+          <button class="send"
+                  style="color: #ffffff; background-color: #116466; margin: 10px; border: 1px solid #116466; border-radius: 12px; width: 50px; height: 35px; font-family: 'Source Serif Pro', serif;"
+                  onmouseover="this.style.backgroundColor='#2C3531';" 
+                  onmouseout="this.style.backgroundColor='#116466';">
+            send
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+  const socket = io();
+  const userId = <%= user.id %>;
+  let currentReceiverId = null;
+  // Track which user IDs have unread messages
+  const unreadMessages = {};  
+
+
+  function scrollToBottom() {
+  const chatMessages = document.getElementById("chatMessages");
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+
+  socket.emit("join", userId);
+
+  function toggleSettingsDropdown() {
+    const dropdown = document.getElementById('settingsDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function toggleOptionsMenu() {
+    const menu = document.getElementById('optionsMenu');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  }
+
+  async function filterUsers() {
+    const input = document.getElementById('searchInput').value.trim();
+    const container = document.getElementById('chatUsersContainer');
+
+    if (input === "") {
+      container.innerHTML = "";
+      return;
+    }
+
+    try {
+      const res = await fetch(`/search-users?q=${encodeURIComponent(input)}`);
+      const users = await res.json();
+
+      container.innerHTML = "";
+
+      if (users.length === 0) {
+        container.innerHTML = `<p style="text-align: center;">No users found.</p>`;
+        return;
+      }
+
+      users.forEach(user => {
+        const div = document.createElement("div");
+        div.className = "user";
+        div.onclick = () => selectUser(user.id, user.fullname);
+        div.innerHTML = `<p>${user.fullname}</p>`;
+        container.appendChild(div);
+      });
+    } catch (error) {
+      console.error("Search failed:", error);
+    }
+  }
+
+  
+async function selectUser(receiverId, fullName) {
+  // switch to chat view
+  document.getElementById('defaultView').style.display = 'none';
+  const chatArea = document.getElementById('chatArea');
+  chatArea.style.display = 'block';
+
+  document.getElementById('chatUserName').textContent = fullName;
+  currentReceiverId = receiverId;
+
+  /* grab message list ONCE */
+  const messagesContainer = document.getElementById('chatMessages');
+
+  /* fade‑in ONLY the message list */
+  messagesContainer.classList.remove('fade-in');
+  void messagesContainer.offsetWidth;   // reflow so animation can replay
+  messagesContainer.classList.add('fade-in');
+
+  /* clear old bubbles */
+  messagesContainer.innerHTML = "";
+
+  try {
+    const res = await fetch(`/messages?userId=${receiverId}`);
+    const messages = await res.json();
+
+    messages.forEach(msg => {
+      const time = formatTimestamp(msg.timestamp);
+      const isReceived = msg.sender_id !== userId;
+
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `message ${
+        isReceived ? 'received slide-in-left' : 'sent slide-in-right'
+      }`;
+      msgDiv.innerHTML = `
+        <div>${msg.message}</div>
+        <span class="timestamp">${time}</span>
+      `;
+      messagesContainer.appendChild(msgDiv);
+    });
+    scrollToBottom();
+  } catch (err) {
+    console.error("Failed to load messages:", err);
+  }
+}
+
+
+
+
+document.querySelector(".send").addEventListener("click", () => {
+  const message = document.getElementById("messageInput").value.trim();
+  if (!message || !currentReceiverId) return;
+
+  socket.emit("send_message", {
+    senderId: userId,
+    receiverId: currentReceiverId,
+    message
+  });
+
+  const time = formatTimestamp(new Date().toISOString());
+  const msgDiv = document.createElement("div");
+  msgDiv.className = "message sent slide-in-right";  
+  msgDiv.innerHTML = `
+      <div>${message}</div>
+      <span class="timestamp">${time}</span>
+  `;
+  document.getElementById("chatMessages").appendChild(msgDiv);
+  document.getElementById("messageInput").value = "";
+  scrollToBottom();
+  loadRecentChats();   // refresh left panel
+});
+
+
+  // Send message on pressing Enter (but allow Shift+Enter for new line)
+document.getElementById("messageInput").addEventListener("keydown", function (event) {  
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault(); // prevent new line
+    document.querySelector(".send").click(); // trigger send button
+  }
+});
+
+
+
+socket.on("receive_message", ({ senderId, message }) => {
+
+  // mark unread if not viewing this chat
+  if (senderId !== currentReceiverId) {
+    unreadMessages[senderId] = true;
+    loadRecentChats();
+    return;
+  }
+
+  const time = formatTimestamp(new Date());
+  const msgDiv = document.createElement("div");
+  msgDiv.className = "message received slide-in-left";  
+  msgDiv.innerHTML = `
+      <div>${message}</div>
+      <span class="timestamp">${time}</span>
+  `;
+  document.getElementById("chatMessages").appendChild(msgDiv);
+  scrollToBottom();
+});
+
+
+
+  function formatTimestamp(isoString) {
+  const date = new Date(isoString);
+  const hours = date.getHours().toString().padStart(2, '0');
+  const mins = date.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${mins}`;
+}
+
+async function loadRecentChats() {
+  const container = document.getElementById('chatUsersContainer');
+  container.innerHTML = "";
+
+  try {
+    const res  = await fetch('/recent-users');
+    const users = await res.json();
+
+    users.forEach(user => {
+  const div = document.createElement("div");
+  div.className = "user";
+  if (user.id === currentReceiverId) div.classList.add("selected"); 
+
+  div.onclick = () => {
+    selectUser(user.id, user.fullname);
+    delete unreadMessages[user.id];
+    loadRecentChats();
+  };
+
+  const bell = unreadMessages[user.id] ? ' 🔔' : '';
+  div.innerHTML = `<p>${user.fullname}${bell}</p>`;
+  container.appendChild(div);
+});
+ 
+  } catch (err) {
+    console.error("Failed to load recent users:", err);
+  }
+}
+
+
+window.onload = () => {
+  loadRecentChats();
+};
+
+
+
+async function viewUserProfile() {
+  if (!currentReceiverId) return;           // nothing selected
+
+  try {
+    const res = await fetch(`/user-profile?id=${currentReceiverId}`);
+    if (!res.ok) return console.error("Profile fetch failed");
+    const data = await res.json();
+
+    document.getElementById("profileName").textContent   = data.fullname;
+    document.getElementById("profileEmail").textContent  = data.email;
+    document.getElementById("profileMobile").textContent = data.phone; // adjust key if you named it mobile
+
+    document.getElementById("profileModal").style.display = "block";
+  } catch (err) {
+    console.error("Error fetching profile:", err);
+  }
+}
+
+function closeProfileModal() {
+  document.getElementById("profileModal").style.display = "none";
+}
+
+
+document.getElementById("deleteChatBtn").addEventListener("click", async () => {
+  if (!currentReceiverId) return;
+  if (!confirm("Clear this chat from your view?")) return;
+
+  try {
+    await fetch("/delete-chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ partnerId: currentReceiverId })
+    });
+    // wipe UI
+    document.getElementById("chatMessages").innerHTML = "";
+    document.getElementById("optionsMenu").style.display = "none";
+    loadRecentChats();           // refresh left panel
+  } catch (err) {
+    alert("Failed to delete chat"); console.error(err);
+  }
+});
+
+
+</script>
+
+<!-- Profile modal (hidden by default) -->
+<div id="profileModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeProfileModal()">&times;</span>
+    <h3 id="profileName"></h3>
+    <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+    <p><strong>Mobile:</strong> <span id="profileMobile"></span></p>
+  </div>
+</div>
+
+
+</body>
+</html>

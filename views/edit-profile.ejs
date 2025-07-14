@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Profile - Yapsy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Source+Serif+Pro&display=swap" rel="stylesheet">
+  <style>
+  body {
+    background-color: #D1E8E2;
+    font-family: 'Source Serif Pro', serif;
+    margin: 0;
+    padding: 40px;
+    color: #2C3531;
+  }
+
+
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideInLeft {
+    0% { opacity: 0; transform: translateX(-40px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+
+
+  .back-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #116466;
+    margin-bottom: 20px;
+    text-decoration: none;
+    display: inline-block;
+    animation: slideInLeft 0.6s ease-out both;
+    transition: transform 0.2s;
+  }
+
+  .back-button:hover {
+    transform: translateX(-2px) scale(1.05);
+  }
+
+
+  .profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+    animation: fadeInUp 0.6s ease-out both;
+  }
+
+  h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    animation: fadeInUp 0.6s ease-out both;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+
+  input {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid #116466;
+    background-color: #ffffff;
+    font-size: 16px;
+    font-family: 'Source Serif Pro', serif;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.5s forwards;
+  }
+
+  input:nth-of-type(1) { animation-delay: 0.2s; }
+  input:nth-of-type(2) { animation-delay: 0.35s; }
+  input:nth-of-type(3) { animation-delay: 0.5s; }
+
+  input:focus {
+    border-color: #2C3531;
+    box-shadow: 0 0 5px rgba(44,53,49,.35);
+    outline: none;
+  }
+
+  button {
+    width: fit-content;
+    padding: 10px 20px;
+    background-color: #116466;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition: transform 0.2s, background-color 0.2s;
+    animation: fadeInUp 0.6s forwards;
+  }
+
+  button:hover {
+    background-color: #2C3531;
+    transform: scale(1.05);
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
+
+  .delete-btn {
+    margin-top: 12px;
+    background-color: #d9534f;
+    animation-delay: 0.7s;
+  }
+
+  .delete-btn:hover {
+    background-color: #c9302c;
+  }
+</style>
+
+</head>
+<body>
+
+  <div class="profile-container">
+    <a class="back-button" href="/profile">←</a>
+
+    <h1>Edit Profile</h1>
+
+    <form action="/profile/edit" method="POST">
+      <label for="fullname">Full Name:</label>
+      <input type="text" id="fullname" name="fullname" value="<%= user.fullname %>" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" value="<%= user.email %>" required>
+
+      <label for="phone">Phone:</label>
+      <input type="text" id="phone" name="phone" value="<%= user.phone %>" required>
+
+      <button type="submit">Save Changes</button>
+    </form>
+    
+    <form action="/signout" method="POST"
+      onsubmit="return confirm('This will permanently delete your Yapsy account. Are you sure?');">
+      <button type="submit" class="delete-btn">Delete Account</button>
+    </form>
+
+  </div>
+
+</body>
+</html>
